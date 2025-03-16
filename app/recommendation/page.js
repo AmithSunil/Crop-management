@@ -19,7 +19,7 @@ const RecommendationPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // GEMINI SECTION
-  const genAI = new GoogleGenerativeAI("");
+  const genAI = new GoogleGenerativeAI(`${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`);
 
   const sendToGemini = async (message) => {
     try {
