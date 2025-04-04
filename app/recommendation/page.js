@@ -1,37 +1,41 @@
-'use client';
-import React, { useState } from 'react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import ReactMarkdown from 'react-markdown';
+"use client";
+import React, { useState } from "react";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ReactMarkdown from "react-markdown";
 
 const RecommendationPage = () => {
   const [inputs, setInputs] = useState({
-    N: '',
-    P: '',
-    K: '',
-    temperature: '',
-    humidity: '',
-    ph: '',
-    rainfall: ''
+    N: "",
+    P: "",
+    K: "",
+    temperature: "",
+    humidity: "",
+    ph: "",
+    rainfall: "",
   });
-  const [response, setResponse] = useState('');
+  const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // GEMINI SECTION
-  const genAI = new GoogleGenerativeAI(`${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`);
+  const genAI = new GoogleGenerativeAI(
+    `${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`
+  );
+
 
   const sendToGemini = async (message) => {
     try {
       const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
-        systemInstruction: 'Provide crop recommendations based on the given environmental and soil parameters. Suggest what crop should be grown on the soil',
+        model: "tunedModels/cropsuggestion-sleiisxyfwjp",
+        // systemInstruction:
+        //   "Provide crop recommendations based on the given environmental and soil parameters. Suggest what crop should be grown on the soil",
         generationConfig: {
           temperature: 1,
           topP: 0.95,
           topK: 40,
           maxOutputTokens: 8192,
-          responseMimeType: 'text/plain',
+          responseMimeType: "text/plain",
         },
       });
 
@@ -43,7 +47,7 @@ const RecommendationPage = () => {
       const result = await chat.sendMessage(message);
       return result.response.text();
     } catch (error) {
-      console.error('Gemini API Error:', error);
+      console.error("Gemini API Error:", error);
       throw error;
     }
   };
@@ -51,8 +55,8 @@ const RecommendationPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setResponse('');
-    toast.info('Generating recommendations...');
+    setResponse("");
+    toast.info("Generating recommendations...");
 
     const message = `Provide crop recommendations based on these values:
       - Nitrogen (N): ${inputs.N} ppm
@@ -66,11 +70,11 @@ const RecommendationPage = () => {
     try {
       const result = await sendToGemini(message);
       setResponse(result);
-      toast.success('Recommendations generated successfully!');
+      toast.success("Recommendations generated successfully!");
     } catch (error) {
-      console.error('Error:', error);
-      setResponse('An error occurred while fetching recommendations.');
-      toast.error('Failed to generate recommendations');
+      console.error("Error:", error);
+      setResponse("An error occurred while fetching recommendations.");
+      toast.error("Failed to generate recommendations");
     } finally {
       setIsLoading(false);
     }
@@ -78,33 +82,40 @@ const RecommendationPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setInputs(prev => ({
+    setInputs((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleClear = () => {
     setInputs({
-      N: '',
-      P: '',
-      K: '',
-      temperature: '',
-      humidity: '',
-      ph: '',
-      rainfall: ''
+      N: "",
+      P: "",
+      K: "",
+      temperature: "",
+      humidity: "",
+      ph: "",
+      rainfall: "",
     });
-    setResponse('');
+    setResponse("");
   };
 
   return (
     <div className="container mx-auto p-4">
       <ToastContainer />
-      <h1 className="text-2xl font-bold mb-4 text-blue-600">Plant Disease Prediction Recommendations</h1>
-      
-      <form onSubmit={handleSubmit} className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <h1 className="text-2xl font-bold mb-4 text-blue-600">
+        Crop Recommendations
+      </h1>
+
+      <form
+        onSubmit={handleSubmit}
+        className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
         <div>
-          <label htmlFor="N" className="block mb-2">Nitrogen (N) (ppm):</label>
+          <label htmlFor="N" className="block mb-2">
+            Nitrogen (N) (ppm):
+          </label>
           <input
             type="number"
             id="N"
@@ -118,7 +129,9 @@ const RecommendationPage = () => {
         </div>
 
         <div>
-          <label htmlFor="P" className="block mb-2">Phosphorus (P) (ppm):</label>
+          <label htmlFor="P" className="block mb-2">
+            Phosphorus (P) (ppm):
+          </label>
           <input
             type="number"
             id="P"
@@ -132,7 +145,9 @@ const RecommendationPage = () => {
         </div>
 
         <div>
-          <label htmlFor="K" className="block mb-2">Potassium (K) (ppm):</label>
+          <label htmlFor="K" className="block mb-2">
+            Potassium (K) (ppm):
+          </label>
           <input
             type="number"
             id="K"
@@ -146,7 +161,9 @@ const RecommendationPage = () => {
         </div>
 
         <div>
-          <label htmlFor="temperature" className="block mb-2">Temperature (°C):</label>
+          <label htmlFor="temperature" className="block mb-2">
+            Temperature (°C):
+          </label>
           <input
             type="number"
             step="0.01"
@@ -161,7 +178,9 @@ const RecommendationPage = () => {
         </div>
 
         <div>
-          <label htmlFor="humidity" className="block mb-2">Humidity (%):</label>
+          <label htmlFor="humidity" className="block mb-2">
+            Humidity (%):
+          </label>
           <input
             type="number"
             step="0.01"
@@ -176,7 +195,9 @@ const RecommendationPage = () => {
         </div>
 
         <div>
-          <label htmlFor="ph" className="block mb-2">pH:</label>
+          <label htmlFor="ph" className="block mb-2">
+            pH:
+          </label>
           <input
             type="number"
             step="0.01"
@@ -191,7 +212,9 @@ const RecommendationPage = () => {
         </div>
 
         <div>
-          <label htmlFor="rainfall" className="block mb-2">Rainfall (mm):</label>
+          <label htmlFor="rainfall" className="block mb-2">
+            Rainfall (mm):
+          </label>
           <input
             type="number"
             step="0.01"
@@ -211,7 +234,7 @@ const RecommendationPage = () => {
             disabled={isLoading}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800 disabled:bg-gray-400 transition"
           >
-            {isLoading ? 'Generating...' : 'Get Recommendations'}
+            {isLoading ? "Generating..." : "Get Recommendations"}
           </button>
           <button
             type="button"
@@ -225,7 +248,9 @@ const RecommendationPage = () => {
 
       {response && (
         <div className="mt-6 max-w-2xl">
-          <h2 className="text-xl font-semibold mb-2 text-blue-600">Recommendations:</h2>
+          <h2 className="text-xl font-semibold mb-2 text-blue-600">
+            Recommendations:
+          </h2>
           <div className="p-4 bg-white border rounded">
             <ReactMarkdown>{response}</ReactMarkdown>
           </div>

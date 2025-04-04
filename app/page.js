@@ -157,6 +157,17 @@ export default function Home() {
           <p>API Endpoint: http://127.0.0.1:8000/predict</p>
         </CardFooter>
       </Card>
+
+      <div className="mt-6 flex justify-center">
+        <Button
+          variant="secondary"
+          onClick={() => {
+            window.location.href = "/recommendation";
+          }}
+        >
+          Go to Recommendations
+        </Button>
+      </div>
     </main>
   );
 }
